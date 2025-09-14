@@ -1,0 +1,42 @@
+services:
+  # Mysql Config 
+  db:
+    image: mysql:8.0
+    container_name: mysql_database
+    restart: always
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234567890Do
+      MYSQL_DATABASE: project_db
+    volumes:
+      - ./db_data:/var/lib/mysql
+  # PHP MyAdmin Service
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_page
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    depends_on:
+      - db
+  # BUN Service
+  project_api:
+    build: .
+    container_name: project_api
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes: 
+      - .:/usr/src/app
+    environment:
+      DB_HOST: db
+
+
+      
+
